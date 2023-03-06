@@ -6,12 +6,13 @@
     xmlns:converters="clr-namespace:DashboardHardwareChecker.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:DashboardHardwareChecker.ViewModels"
     Title="{Binding Version}"
     Width="1100"
-    Height="800"
+    Height="900"
     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,
                                      IsDesignTimeCreatable=True}"
     Background="{DynamicResource MaterialDesignPaper}"
@@ -29,6 +30,7 @@
 
     <Window.Resources>
         <converters:EnumToStringConverter x:Key="EnumToStringConverter" />
+
     </Window.Resources>
 
 
@@ -37,7 +39,8 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="275" />
+                <RowDefinition Height="250" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
@@ -51,13 +54,14 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Margin="16"
+                Margin="5"
                 Header="System Information">
 
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:Card
                         Width="400"
                         Height="90"
+                        Padding="5"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         materialDesign:ShadowAssist.ShadowDepth="Depth1">
@@ -150,6 +154,53 @@
                         </StackPanel>
                     </materialDesign:Card>
 
+                    <materialDesign:Card
+                        Width="200"
+                        Height="90"
+                        Margin="15,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+
+                        <TextBlock
+                            x:Name="ComputerLocation"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            TextWrapping="Wrap" />
+                    </materialDesign:Card>
+
+                    <materialDesign:Card
+                        Width="200"
+                        Height="90"
+                        Margin="15,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        <StackPanel Margin="16" Orientation="Vertical">
+                            <Image Width="32" Height="32">
+                                <Image.Style>
+                                    <Style>
+                                        <Setter Property="Image.Source" Value="/Resources/Paratext_Connected32.png" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ParatextVersion}" Value="">
+                                                <Setter Property="Image.Source" Value="/Resources/Paratext_Disconnected32.png" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                            <TextBlock
+                                x:Name="ParatextVersion"
+                                Margin="10"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </materialDesign:Card>
+
+
                     <StackPanel Orientation="Horizontal" Visibility="{Binding NoInternetVisibility}">
 
                         <iconPacks:PackIconUnicons
@@ -173,61 +224,67 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Margin="16"
+                Margin="5"
+                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
                 Header="Power Plans">
 
-                <StackPanel Margin="10" Orientation="Vertical">
+                <StackPanel Margin="3" Orientation="Vertical">
                     <TextBlock>The following plans are on your computer :</TextBlock>
 
                     <DataGrid
                         Name="dataGrid1"
+                        Height="150"
                         AutoGenerateColumns="False"
                         CanUserAddRows="False"
                         CanUserDeleteRows="False"
                         HeadersVisibility="Column"
                         IsEnabled="{Binding IsNotRunning}"
-                        ItemsSource="{Binding PowerModes}">
+                        ItemsSource="{Binding PowerModes}"
+                        VerticalScrollBarVisibility="Visible">
                         <DataGrid.Style>
                             <Style TargetType="DataGrid">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                        <Setter Property="Background" Value="Orange" />
+                                        <Setter Property="Background" Value="{StaticResource SecondaryHueDarkBrush}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </DataGrid.Style>
 
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button
-                                            Width="100"
-                                            Height="30"
-                                            cm:Message.Attach="[Event Click] = [Action SetPowerMode($this)]"
-                                            Content="Set Active">
-                                            <Button.Style>
-                                                <Style BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="{x:Type Button}">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsActive}" Value="False" />
-                                                                <Condition Binding="{Binding IsPresent}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Collapsed" />
-                                                            </MultiDataTrigger.Setters>
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            <!--<DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                Width="100"
+                                                Height="30"
+                                                cm:Message.Attach="[Event Click] = [Action SetPowerMode($this)]"
+                                                Content="Set Active">
+                                                <Button.Style>
+                                                    <Style BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="{x:Type Button}">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsActive}" Value="False" />
+                                                                    <Condition Binding="{Binding IsPresent}" Value="False" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.Setters>
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </MultiDataTrigger.Setters>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>-->
 
-                            <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="Active Plan" />
+                            <DataGridCheckBoxColumn
+                                Binding="{Binding IsActive}"
+                                Header="Active Plan"
+                                IsReadOnly="True" />
                             <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
                             <DataGridTextColumn Binding="{Binding PowerModeGuid}" Header="GUID" />
                             <DataGridCheckBoxColumn Binding="{Binding IsPresent}" Header="Present" />
@@ -239,10 +296,11 @@
 
                     <Button
                         x:Name="RunAll"
-                        Margin="5"
+                        Margin="0,5,0,0"
                         HorizontalAlignment="Center"
+                        IsEnabled="{Binding IsNotRunning}"
                         Style="{StaticResource GreenMidButton}">
-                        Run Performance Test
+                        1. Please Run Performance Test
                     </Button>
                 </StackPanel>
             </GroupBox>
@@ -252,17 +310,89 @@
                 Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Margin="16"
-                IsEnabled="{Binding IsSendMessageGroupBoxEnabled}"
-                Header="Send Message to Clear Bible">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock
-                        Margin="10,0,0,5"
-                        VerticalAlignment="Bottom"
-                        FontSize="18"
-                        Text="Message (please put your full name in here):" />
+                Margin="5"
+                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
+                Header="2. Please Select the Projects that you Intend to use with Clear Dashboard">
 
-                    <TextBox
+                <StackPanel Orientation="Vertical">
+                    <TextBlock FontSize="18" Foreground="{StaticResource PrimaryHueMidBrush}">
+                        <Run Text="{Binding ProjectCount}" />
+                        <Run Text="Projects Selected" />
+                    </TextBlock>
+
+                    <ListView ItemsSource="{Binding SelectedProjects}">
+                        <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox cm:Message.Attach="[Event Checked] = [Action CalculateTotals]; [Event Unchecked] = [Action CalculateTotals]" IsChecked="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="150">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock MinWidth="150" Text="{Binding Name}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{StaticResource PrimaryHueLightForegroundBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                                                <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="300">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock MinWidth="200" Text="{Binding LongName}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{StaticResource PrimaryHueLightForegroundBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                                                <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </GroupBox>
+
+
+            <!--  Row 3  -->
+            <GroupBox
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="5"
+                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
+                Header="3. Additional Information:">
+                <!--  IsEnabled="{Binding IsSendMessageGroupBoxEnabled}"  -->
+                <StackPanel Orientation="Vertical">
+
+
+                    <!--<TextBox
                         Height="40"
                         Margin="10,0,10,10"
                         AcceptsReturn="True"
@@ -272,13 +402,66 @@
                         Foreground="{StaticResource SecondaryHueDarkForegroundBrush}"
                         SpellCheck.IsEnabled="True"
                         Text="{Binding UserMessage}"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap" />-->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox
+                            Width="300"
+                            Height="50"
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            materialDesign:HintAssist.Hint="Full Name"
+                            AcceptsReturn="True"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="UserName" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <converters:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
 
-                    <Grid>
+                        <TextBox
+                            Width="300"
+                            Height="50"
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            materialDesign:HintAssist.Hint="Email Address"
+                            AcceptsReturn="True"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="UserEmail" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <converters:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <TextBox
+                            Width="300"
+                            Height="50"
+                            Margin="10,5,0,0"
+                            VerticalAlignment="Center"
+                            materialDesign:HintAssist.Hint="Organization"
+                            AcceptsReturn="True"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="Organization" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <converters:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <Grid Margin="0,15,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="88*" />
+                            <ColumnDefinition Width="270*" />
+                            <ColumnDefinition Width="357*" />
+                            <ColumnDefinition Width="357*" />
                         </Grid.ColumnDefinitions>
 
 
@@ -286,7 +469,7 @@
                             Grid.Column="0"
                             Width="36"
                             Height="36"
-                            Margin="20,0,50,0"
+                            Margin="20,0,0,0"
                             VerticalAlignment="Center"
                             Foreground="{StaticResource RedMidBrush}"
                             Kind="EnvelopeExclamation">
@@ -306,7 +489,7 @@
                             Grid.Column="0"
                             Width="36"
                             Height="36"
-                            Margin="20,0,50,0"
+                            Margin="20,0,0,0"
                             VerticalAlignment="Center"
                             Foreground="{StaticResource GreenMidBrush}"
                             Kind="EnvelopeCheck">
@@ -325,15 +508,15 @@
 
                         <Button
                             x:Name="SendMessage"
-                            Grid.Column="2"
+                            Grid.Column="3"
                             Width="Auto"
-                            Margin="10,0,10,10"
+                            Margin="0,0,10,10"
                             HorizontalAlignment="Right"
-                            Content="Send Specifications to Clear Bible">
+                            Content="4. Send Specifications to Clear Bible"
+                            IsEnabled="{Binding OkButtonIsEnabled}">
                             <Button.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}" TargetType="Button">
+                                <Style BasedOn="{StaticResource GreenMidButton}" TargetType="Button">
                                     <Setter Property="IsEnabled" Value="True" />
-                                    <Setter Property="Visibility" Value="Collapsed" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding NoInternetVisibility}" Value="Visible">
                                             <Setter Property="IsEnabled" Value="False" />
@@ -343,9 +526,6 @@
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding SendSuccessfulVisibility}" Value="Visible">
                                             <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ShowOkButton}" Value="Visible">
-                                            <Setter Property="Visibility" Value="Visible" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

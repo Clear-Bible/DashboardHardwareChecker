@@ -1,22 +1,21 @@
 ﻿using Caliburn.Micro;
+using DashboardHardwareChecker.Helpers;
+using DashboardHardwareChecker.Models;
+using MahApps.Metro.Converters;
+using PowerManagerAPI;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
+using System.Management;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using DashboardHardwareChecker.Helpers;
-using System.Windows.Threading;
-using System.Collections.ObjectModel;
-using DashboardHardwareChecker.Models;
-using System.Diagnostics;
-using System.Management;
-using PowerManagerAPI;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace DashboardHardwareChecker.ViewModels
 {
@@ -99,7 +98,7 @@ namespace DashboardHardwareChecker.ViewModels
         }
 
 
-        private bool _isSendMessageGroupBoxEnabled = false;
+        private bool _isSendMessageGroupBoxEnabled;
         public bool IsSendMessageGroupBoxEnabled
         {
             get => _isSendMessageGroupBoxEnabled;
@@ -125,8 +124,8 @@ namespace DashboardHardwareChecker.ViewModels
 
 
 
-        private System.Windows.Input.Cursor _cursor;
-        public System.Windows.Input.Cursor Cursor
+        private Cursor _cursor;
+        public Cursor Cursor
         {
             get => _cursor;
             set
@@ -259,14 +258,39 @@ namespace DashboardHardwareChecker.ViewModels
         }
 
 
-        private string _userMessage;
-        public string UserMessage
+        private string _userName = "";
+        public string UserName
         {
-            get => _userMessage;
+            get => _userName;
             set
             {
-                _userMessage = value;
-                NotifyOfPropertyChange(() => UserMessage);
+                _userName = value;
+                NotifyOfPropertyChange(() => UserName);
+                ValidateOkButton();
+            }
+        }
+
+        private string _userEmail = "";
+        public string UserEmail
+        {
+            get => _userEmail;
+            set
+            {
+                _userEmail = value;
+                NotifyOfPropertyChange(() => UserEmail);
+                ValidateOkButton();
+            }
+        }
+
+        private string _organization = "";
+        public string Organization
+        {
+            get => _organization;
+            set
+            {
+                _organization = value;
+                NotifyOfPropertyChange(() => Organization);
+                ValidateOkButton();
             }
         }
 
@@ -304,15 +328,76 @@ namespace DashboardHardwareChecker.ViewModels
             }
         }
 
-        private Visibility _showOkButton = Visibility.Collapsed;
 
-        public Visibility ShowOkButton
+        private bool _isTestComplete;
+        public bool IsTestComplete
         {
-            get => _showOkButton;
+            get => _isTestComplete;
             set
             {
-                _showOkButton = value;
-                NotifyOfPropertyChange(() => ShowOkButton);
+                _isTestComplete = value;
+                NotifyOfPropertyChange(() => IsTestComplete);
+                ValidateOkButton();
+            }
+        }
+
+
+        private bool _okButtonIsEnabled;
+        public bool OkButtonIsEnabled
+        {
+            get => _okButtonIsEnabled;
+            set
+            {
+                _okButtonIsEnabled = value;
+                NotifyOfPropertyChange(() => OkButtonIsEnabled);
+            }
+        }
+
+
+        private string _computerLocation;
+        public string ComputerLocation
+        {
+            get => _computerLocation;
+            set
+            {
+                _computerLocation = value; 
+                NotifyOfPropertyChange(() => ComputerLocation);
+            }
+        }
+
+        private ObservableCollection<SelectedParatextProjects> _selectedProjects = new();
+        public ObservableCollection<SelectedParatextProjects> SelectedProjects
+        {
+            get => _selectedProjects;
+            set
+            {
+                _selectedProjects = value;
+                NotifyOfPropertyChange(() => SelectedProjects);
+            }
+        }
+
+
+        private int _projectCount = 0;
+        public int ProjectCount
+        {
+            get => _projectCount;
+            set
+            {
+                _projectCount = value;
+                NotifyOfPropertyChange(() => ProjectCount);
+            }
+        }
+
+
+
+        private string _paratextVersion = "";
+        public string ParatextVersion
+        {
+            get => _paratextVersion;
+            set
+            {
+                _paratextVersion = value;
+                NotifyOfPropertyChange(() => ParatextVersion);
             }
         }
 
@@ -332,12 +417,31 @@ namespace DashboardHardwareChecker.ViewModels
         }
 
         
-        protected async override void OnViewLoaded(object view)
+        protected override async void OnViewLoaded(object view)
         {
             //get the assembly version
             var thisVersion = Assembly.GetEntryAssembly().GetName().Version;
             Version = $"Clear Dashboard System Checker  -  Version: {thisVersion.Major}.{thisVersion.Minor}.{thisVersion.Build}.{thisVersion.Revision}";
-            
+
+
+            // figure out the Paratext version
+            ParatextProxy paratextProxy = new ParatextProxy();
+            if (paratextProxy.IsParatextInstalled())
+            {
+                var path = Path.Combine(paratextProxy.ParatextInstallPath, "paratext.exe");
+                if (File.Exists(path))
+                {
+                    var fileInfo = FileVersionInfo.GetVersionInfo(path);
+                    ParatextVersion = fileInfo.ProductVersion;
+                }
+                else
+                {
+                    ParatextVersion = "Not Installed";
+                }
+
+            }
+
+
             // Get the OS Version
             using (var objOS = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
             {
@@ -382,9 +486,25 @@ namespace DashboardHardwareChecker.ViewModels
             else
             {
                 NoInternetVisibility = Visibility.Collapsed;
+
+                await GetComputerGeolocation();
             }
 
- base.OnViewLoaded(view);
+            
+            // get the list of paratext projects that the user has
+            var projects = await paratextProxy.GetParatextProjectsOrResources();
+            
+            foreach (var project in projects)
+            {
+                SelectedProjects.Add(new SelectedParatextProjects
+                {
+                    IsSelected = false,
+                    Name = project.Name,
+                    LongName = project.LongName,
+                });
+            }
+
+            base.OnViewLoaded(view);
         }
 
         #endregion //Constructor
@@ -392,6 +512,21 @@ namespace DashboardHardwareChecker.ViewModels
 
 
         #region Methods
+
+        public void ValidateOkButton()
+        {
+            if (UserName == "" || UserEmail == "" || Organization == "" || IsTestComplete == false)
+            {
+                return;
+            }
+            OkButtonIsEnabled = true;
+        }
+
+        public void CalculateTotals()
+        {
+            ProjectCount = _selectedProjects.Where(x => x.IsSelected).ToList().Count;
+        }
+
 
         private void InitializeDefaultPowerModes()
         {
@@ -707,7 +842,7 @@ namespace DashboardHardwareChecker.ViewModels
                 }
             }
 
-            ShowOkButton = Visibility.Visible;
+            IsTestComplete = true;
         }
 
 
@@ -773,7 +908,16 @@ namespace DashboardHardwareChecker.ViewModels
             var thisVersion = Assembly.GetEntryAssembly().GetName().Version;
             var versionNumber = $"{thisVersion.Major}.{thisVersion.Minor}.{thisVersion.Build}.{thisVersion.Revision}";
 
-            string msg = $"*User:* {UserMessage} \n*Dashboard HardWareChecker Version*: {versionNumber}";
+            string msg = $"*Dashboard HardWareChecker Version*: {versionNumber} \n\n*Name:* {UserName} \n*Email:* {UserEmail} \n*Organization:* {Organization}";
+            msg += $"\n*Paratext Version:* {ParatextVersion} \n\n*Location*:\n{ComputerLocation}\n";
+            msg += $"\n---------------------------------------------";
+            foreach (var projects in SelectedProjects)
+            {
+                if (projects.IsSelected)
+                {
+                    msg += $"\n*Paratext Project:* {projects.Name}  {projects.LongName}";
+                }
+            }
 
             SlackMessage slackMessage = new SlackMessage(msg, this._zipPathAttachment);
             var bSuccess = await slackMessage.SendFileToSlackAsync();
@@ -788,6 +932,71 @@ namespace DashboardHardwareChecker.ViewModels
                 SendSuccessfulVisibility = Visibility.Collapsed;
                 SendErrorVisibility = Visibility.Visible;
             }
+        }
+
+        private void GetParatextVersion()
+        {
+
+        }
+
+        private async Task GetComputerGeolocation()
+        {
+            await Task.Run(() =>
+            {
+                var ip = GeoLocation.GetExternalIPAddress();
+                if (ip == "")
+                {
+                    ComputerLocation = "";
+                    return Task.CompletedTask;
+                }
+
+                ComputerLocation = GeoLocation.GetUserCountryByIp(ip);
+                return Task.CompletedTask;
+            });
+
+
+            //var timeout = 1000;
+
+            ////DONE: don't forget to dispose CancellationTokenSource instance 
+            //using (var tokenSource = new CancellationTokenSource(timeout))
+            //{
+            //    try
+            //    {
+            //        var token = tokenSource.Token;
+
+            //        //TODO: May be you'll want to add .ConfigureAwait(false);
+            //        Task task = Task.Run(() =>
+            //        {
+            //            var ip = GeoLocation.GetExternalIPAddress();
+            //        });
+            //        Task task = Task.Run(() => DoSomething(token), token);
+
+            //        await task;
+
+            //        // Completed
+            //    }
+            //    catch (TaskCanceledException)
+            //    {
+            //        // Cancelled due to timeout
+
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        // Failed to complete due to e exception
+
+            //        Console.WriteLine("--StartThread ...there is an exception----");
+
+            //        //DONE: let's be nice and don't swallow the exception
+            //        throw;
+            //    }
+            //}
+
+
+
+
+
+
+
         }
 
         #endregion // Methods
