@@ -245,6 +245,7 @@
                         CanUserDeleteRows="False"
                         HeadersVisibility="Column"
                         IsEnabled="{Binding IsNotRunning}"
+                        IsReadOnly="True"
                         ItemsSource="{Binding PowerModes}"
                         VerticalScrollBarVisibility="Visible">
                         <DataGrid.Style>
@@ -287,10 +288,7 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>-->
 
-                            <DataGridCheckBoxColumn
-                                Binding="{Binding IsActive}"
-                                Header="Active Plan"
-                                IsReadOnly="True" />
+                            <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="Active Plan" />
                             <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
                             <DataGridTextColumn Binding="{Binding PowerModeGuid}" Header="GUID" />
                             <DataGridCheckBoxColumn Binding="{Binding IsPresent}" Header="Present" />
