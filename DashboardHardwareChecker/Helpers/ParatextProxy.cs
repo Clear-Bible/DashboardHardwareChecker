@@ -80,7 +80,7 @@ namespace DashboardHardwareChecker.Helpers
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Application is intended for Windows OS only.")]
-        private void GetParatextProjectsPath()
+        public void GetParatextProjectsPath()
         {
             _paratextProjectPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Paratext\8", "Settings_Directory", null);
             // check if directory exists
@@ -104,8 +104,9 @@ namespace DashboardHardwareChecker.Helpers
         {
             if (_paratextProjectPath == "")
             {
-                GetParatextProjectsPath();
+                return null;
             }
+
 
             var searchPath = "";
             if (folderType == FolderType.Projects)

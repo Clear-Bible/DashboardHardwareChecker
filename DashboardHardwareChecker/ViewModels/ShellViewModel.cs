@@ -490,18 +490,24 @@ namespace DashboardHardwareChecker.ViewModels
                 await GetComputerGeolocation();
             }
 
-            
+
             // get the list of paratext projects that the user has
-            var projects = await paratextProxy.GetParatextProjectsOrResources();
-            
-            foreach (var project in projects)
+            paratextProxy.GetParatextProjectsPath();
+            if (paratextProxy.ParatextProjectPath != "")
             {
-                SelectedProjects.Add(new SelectedParatextProjects
+                var projects = await paratextProxy.GetParatextProjectsOrResources();
+                if (projects is not null)
                 {
-                    IsSelected = false,
-                    Name = project.Name,
-                    LongName = project.LongName,
-                });
+                    foreach (var project in projects)
+                    {
+                        SelectedProjects.Add(new SelectedParatextProjects
+                        {
+                            IsSelected = false,
+                            Name = project.Name,
+                            LongName = project.LongName,
+                        });
+                    }
+                }
             }
 
             base.OnViewLoaded(view);
