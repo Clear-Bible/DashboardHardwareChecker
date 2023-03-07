@@ -228,11 +228,17 @@
                 materialDesign:ColorZoneAssist.Mode="SecondaryDark"
                 Header="Power Plans">
 
-                <StackPanel Margin="3" Orientation="Vertical">
+                <Grid Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
                     <TextBlock>The following plans are on your computer :</TextBlock>
 
                     <DataGrid
                         Name="dataGrid1"
+                        Grid.Row="1"
                         Height="150"
                         AutoGenerateColumns="False"
                         CanUserAddRows="False"
@@ -296,13 +302,14 @@
 
                     <Button
                         x:Name="RunAll"
+                        Grid.Row="2"
                         Margin="0,5,0,0"
                         HorizontalAlignment="Center"
                         IsEnabled="{Binding IsNotRunning}"
                         Style="{StaticResource GreenMidButton}">
                         1. Please Run Performance Test
                     </Button>
-                </StackPanel>
+                </Grid>
             </GroupBox>
 
             <!--  Row 2  -->
@@ -314,13 +321,20 @@
                 materialDesign:ColorZoneAssist.Mode="SecondaryDark"
                 Header="2. Please Select the Projects that you Intend to use with Clear Dashboard">
 
-                <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <TextBlock FontSize="18" Foreground="{StaticResource PrimaryHueMidBrush}">
                         <Run Text="{Binding ProjectCount}" />
                         <Run Text="Projects Selected" />
                     </TextBlock>
 
-                    <ListView ItemsSource="{Binding SelectedProjects}">
+                    <ListView
+                        Grid.Row="1"
+                        ItemsSource="{Binding SelectedProjects}"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible">
                         <ListView.Resources>
                             <Style TargetType="GridViewColumnHeader">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -376,7 +390,7 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                </StackPanel>
+                </Grid>
             </GroupBox>
 
 
