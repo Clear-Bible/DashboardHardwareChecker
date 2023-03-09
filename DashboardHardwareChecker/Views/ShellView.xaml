@@ -12,7 +12,7 @@
     xmlns:viewModels="clr-namespace:DashboardHardwareChecker.ViewModels"
     Title="{Binding Version}"
     Width="1100"
-    Height="900"
+    Height="830"
     d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,
                                      IsDesignTimeCreatable=True}"
     Background="{DynamicResource MaterialDesignPaper}"
@@ -34,7 +34,7 @@
     </Window.Resources>
 
 
-    <StackPanel Orientation="Vertical">
+    <StackPanel Margin="5,5,5,0" Orientation="Vertical">
         <Grid ShowGridLines="False">
 
             <Grid.RowDefinitions>
@@ -50,174 +50,185 @@
             </Grid.ColumnDefinitions>
 
             <!--  ROW 0  -->
-            <GroupBox
+            <StackPanel
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Margin="5"
-                Header="System Information">
-
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:Card
-                        Width="400"
-                        Height="90"
-                        Padding="5"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="5,0,0,0"
-                                FontWeight="Bold"
-                                Foreground="{StaticResource PrimaryHueDarkBrush}"
-                                Text="NAME:" />
-                            <TextBlock
-                                x:Name="MachineName"
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Margin="0,0,10,0"
-                                FontWeight="Bold"
-                                Foreground="{StaticResource SecondaryHueDarkBrush}" />
-
-
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="5,0,0,0"
-                                FontWeight="Bold"
-                                Foreground="{StaticResource PrimaryHueDarkBrush}"
-                                Text="OS:" />
-                            <TextBlock
-                                x:Name="WindowsVersion"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="0,0,10,0"
-                                FontWeight="Bold"
-                                Foreground="{StaticResource SecondaryHueDarkBrush}" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="5,0,0,0"
-                                FontWeight="Bold"
-                                Foreground="{StaticResource PrimaryHueDarkBrush}"
-                                Text="CHASSIS:" />
-                            <TextBlock
-                                x:Name="ChassisType"
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Margin="0,0,10,0"
-                                FontWeight="Bold"
-                                Foreground="{StaticResource SecondaryHueDarkBrush}" />
-                        </Grid>
-                    </materialDesign:Card>
-                    <materialDesign:Card
-                        Width="200"
-                        Height="90"
-                        Margin="15,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
-                        <StackPanel Margin="16" Orientation="Horizontal">
-                            <StackPanel Orientation="Vertical">
-                                <materialDesign:PackIcon
-                                    Width="32"
-                                    Height="32"
-                                    VerticalAlignment="Center"
-                                    Kind="{Binding BatteryChargeStatus, Converter={StaticResource EnumToStringConverter}}" />
-                                <materialDesign:PackIcon
-                                    Width="32"
-                                    Height="32"
-                                    VerticalAlignment="Center"
-                                    Kind="{Binding PowerStatus, Converter={StaticResource EnumToStringConverter}}" />
-                            </StackPanel>
-
-                            <TextBlock
-                                x:Name="BatteryPercent"
-                                Margin="16"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </materialDesign:Card>
-
-                    <materialDesign:Card
-                        Width="200"
-                        Height="90"
-                        Margin="15,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                Orientation="Horizontal">
+                <materialDesign:Card
+                    Width="400"
+                    Height="90"
+                    Padding="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
                         <TextBlock
-                            x:Name="ComputerLocation"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="5,0,0,0"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource PrimaryHueDarkBrush}"
+                            Text="NAME:" />
+                        <TextBlock
+                            x:Name="MachineName"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,10,0"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource SecondaryHueDarkBrush}" />
+
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="5,0,0,0"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource PrimaryHueDarkBrush}"
+                            Text="OS:" />
+                        <TextBlock
+                            x:Name="WindowsVersion"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,0,10,0"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource SecondaryHueDarkBrush}" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="5,0,0,0"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource PrimaryHueDarkBrush}"
+                            Text="CHASSIS:" />
+                        <TextBlock
+                            x:Name="ChassisType"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="0,0,10,0"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource SecondaryHueDarkBrush}" />
+                    </Grid>
+                </materialDesign:Card>
+                <materialDesign:Card
+                    Width="200"
+                    Height="90"
+                    Margin="15,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                    <StackPanel Margin="16" Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <materialDesign:PackIcon
+                                Width="32"
+                                Height="32"
+                                VerticalAlignment="Center"
+                                Kind="{Binding BatteryChargeStatus, Converter={StaticResource EnumToStringConverter}}" />
+                            <materialDesign:PackIcon
+                                Width="32"
+                                Height="32"
+                                VerticalAlignment="Center"
+                                Kind="{Binding PowerStatus, Converter={StaticResource EnumToStringConverter}}" />
+                        </StackPanel>
+
+                        <TextBlock
+                            x:Name="BatteryPercent"
+                            Margin="16"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </materialDesign:Card>
+
+                <materialDesign:Card
+                    Width="200"
+                    Height="90"
+                    Margin="15,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1">
+
+                    <TextBlock
+                        x:Name="ComputerLocation"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        TextWrapping="Wrap" />
+                </materialDesign:Card>
+
+                <materialDesign:Card
+                    Width="200"
+                    Height="90"
+                    Margin="15,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                    <StackPanel Margin="16" Orientation="Vertical">
+                        <Image Width="32" Height="32">
+                            <Image.Style>
+                                <Style>
+                                    <Setter Property="Image.Source" Value="/Resources/Paratext_Connected32.png" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ParatextVersion}" Value="">
+                                            <Setter Property="Image.Source" Value="/Resources/Paratext_Disconnected32.png" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock
+                            x:Name="ParatextVersion"
+                            Margin="10"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontSize="12"
                             TextWrapping="Wrap" />
-                    </materialDesign:Card>
-
-                    <materialDesign:Card
-                        Width="200"
-                        Height="90"
-                        Margin="15,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
-                        <StackPanel Margin="16" Orientation="Vertical">
-                            <Image Width="32" Height="32">
-                                <Image.Style>
-                                    <Style>
-                                        <Setter Property="Image.Source" Value="/Resources/Paratext_Connected32.png" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ParatextVersion}" Value="">
-                                                <Setter Property="Image.Source" Value="/Resources/Paratext_Disconnected32.png" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-                            <TextBlock
-                                x:Name="ParatextVersion"
-                                Margin="10"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="12"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </materialDesign:Card>
-
-
-                    <StackPanel Orientation="Horizontal" Visibility="{Binding NoInternetVisibility}">
-
-                        <iconPacks:PackIconUnicons
-                            Width="35"
-                            Height="35"
-                            Foreground="{StaticResource RedMidBrush}"
-                            Kind="Wifi" />
-
-                        <TextBlock
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            FontSize="18"
-                            Foreground="{StaticResource RedMidBrush}"
-                            Text="No Internet" />
                     </StackPanel>
+                </materialDesign:Card>
+
+
+                <StackPanel Orientation="Horizontal" Visibility="{Binding NoInternetVisibility}">
+
+                    <iconPacks:PackIconUnicons
+                        Width="35"
+                        Height="35"
+                        Foreground="{StaticResource RedMidBrush}"
+                        Kind="Wifi" />
+
+                    <TextBlock
+                        Margin="5"
+                        VerticalAlignment="Center"
+                        FontSize="18"
+                        Foreground="{StaticResource RedMidBrush}"
+                        Text="No Internet" />
                 </StackPanel>
-            </GroupBox>
+            </StackPanel>
+            <!--<GroupBox
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="5">
+                <GroupBox.Header>
+                    <TextBlock
+                        MaxHeight="15"
+                        VerticalAlignment="Bottom"
+                        FontSize="10"
+                        Text="System Information" />
+                </GroupBox.Header>
+
+
+            </GroupBox>-->
 
             <!--  ROW 1  -->
             <GroupBox
@@ -225,8 +236,14 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Margin="5"
-                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
-                Header="Power Plans">
+                materialDesign:ColorZoneAssist.Mode="SecondaryDark">
+                <GroupBox.Header>
+                    <TextBlock
+                        MaxHeight="15"
+                        VerticalAlignment="Bottom"
+                        FontSize="12"
+                        Text="Power Plans" />
+                </GroupBox.Header>
 
                 <Grid Margin="3">
                     <Grid.RowDefinitions>
@@ -316,8 +333,14 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Margin="5"
-                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
-                Header="2. Please Select the Projects that you Intend to use with Clear Dashboard">
+                materialDesign:ColorZoneAssist.Mode="SecondaryDark">
+                <GroupBox.Header>
+                    <TextBlock
+                        MaxHeight="15"
+                        VerticalAlignment="Bottom"
+                        FontSize="12"
+                        Text="2. Please Select the Projects that you Intend to use with Clear Dashboard" />
+                </GroupBox.Header>
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -398,8 +421,16 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Margin="5"
-                materialDesign:ColorZoneAssist.Mode="SecondaryDark"
-                Header="3. Additional Information:">
+                materialDesign:ColorZoneAssist.Mode="SecondaryDark">
+                <GroupBox.Header>
+                    <TextBlock
+                        MaxHeight="15"
+                        VerticalAlignment="Bottom"
+                        FontSize="12"
+                        Text="3. Additional Information:" />
+                </GroupBox.Header>
+
+
                 <!--  IsEnabled="{Binding IsSendMessageGroupBoxEnabled}"  -->
                 <StackPanel Orientation="Vertical">
 
@@ -418,8 +449,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBox
                             Width="300"
-                            Height="50"
-                            Margin="10,5,0,0"
+                            Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             materialDesign:HintAssist.Hint="Full Name"
                             AcceptsReturn="True"
@@ -435,8 +465,7 @@
 
                         <TextBox
                             Width="300"
-                            Height="50"
-                            Margin="10,5,0,0"
+                            Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             materialDesign:HintAssist.Hint="Email Address"
                             AcceptsReturn="True"
@@ -452,8 +481,7 @@
 
                         <TextBox
                             Width="300"
-                            Height="50"
-                            Margin="10,5,0,0"
+                            Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             materialDesign:HintAssist.Hint="Organization"
                             AcceptsReturn="True"
