@@ -16,11 +16,16 @@ namespace DashboardHardwareChecker.Helpers
     {
         #region Member Variables      
 
+        
 
         #endregion //Member Variables
 
 
         #region Public Properties
+
+        public string? CpuType { get; set; } = string.Empty;
+        public string RamGb { get; set; } = string.Empty;
+
         #endregion //Public Properties
 
 
@@ -109,8 +114,9 @@ namespace DashboardHardwareChecker.Helpers
 
         private StringBuilder GetCpuManufacturer(StringBuilder sb)
         {
-            sb.AppendLine(string.Format("CPU Type: {0}", System.Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")));
-
+            CpuType = Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER");
+            sb.AppendLine($"CPU Type: {CpuType}");
+            
             return sb;
         }
 
@@ -120,6 +126,7 @@ namespace DashboardHardwareChecker.Helpers
             {
                 double maxSpeed = Convert.ToDouble(obj["MaxClockSpeed"]) / 1000;
                 sb.AppendLine(string.Format("{0} Running at {1:0.00} Ghz", obj["Name"], maxSpeed));
+                CpuType = obj["Name"].ToString().Trim() + " " + maxSpeed;
             }
 
             return sb;
@@ -256,8 +263,11 @@ namespace DashboardHardwareChecker.Helpers
 
             foreach (var element in ramInfo)
             {
+                RamGb = (Convert.ToDouble(element["TotalVisibleMemorySize"]) / (1024 * 1024)).ToString(CultureInfo
+                    .InvariantCulture);
+
                 sb.AppendLine(
-                    $"Total Visible Memory: {(Convert.ToDouble(element["TotalVisibleMemorySize"]) / (1024 * 1024)).ToString(CultureInfo.InvariantCulture)} GB");
+                    $"Total Visible Memory: {RamGb} GB");
                 sb.AppendLine(
                     $"Free Physical Memory: {(Convert.ToDouble(element["FreePhysicalMemory"]) / (1024 * 1024)).ToString(CultureInfo.InvariantCulture)} GB");
                 sb.AppendLine(
@@ -265,6 +275,9 @@ namespace DashboardHardwareChecker.Helpers
                 sb.AppendLine(
                     $"Free Virtual Memory: {(Convert.ToDouble(element["FreeVirtualMemory"]) / (1024 * 1024)).ToString(CultureInfo.InvariantCulture)} GB");
             }
+
+
+
             return sb;
         }
 
