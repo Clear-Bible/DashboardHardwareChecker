@@ -6,22 +6,28 @@ using PowerManagerAPI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 
 namespace DashboardHardwareChecker.ViewModels
 {
     public class ShellViewModel : Screen
     {
         #region Member Variables   
+
+        private string? _cpuType;
+        private string? _ramGb;
 
         public enum Chassis
         {
@@ -75,6 +81,8 @@ namespace DashboardHardwareChecker.ViewModels
         private DispatcherTimer _timer = new();
 
         private string _zipPathAttachment { get; set; } = string.Empty;
+
+        private RegistrationData _registration = new();
 
         #endregion //Member Variables
 
@@ -388,8 +396,6 @@ namespace DashboardHardwareChecker.ViewModels
             }
         }
 
-
-
         private string _paratextVersion = "";
         public string ParatextVersion
         {
@@ -509,6 +515,11 @@ namespace DashboardHardwareChecker.ViewModels
                     }
                 }
             }
+
+
+            GetParatextVersion();
+
+
 
             base.OnViewLoaded(view);
         }
@@ -809,6 +820,10 @@ namespace DashboardHardwareChecker.ViewModels
             var destinationComputerInfoPath = Path.Combine(Path.GetTempPath(), "computerInfo.log");
 
             _ = await computerInfo.GetComputerInfo(destinationComputerInfoPath);
+
+            _cpuType = computerInfo.CpuType;
+            _ramGb = computerInfo.RamGb;
+
             Files.Add(destinationComputerInfoPath);
 
             // get power plan info
@@ -916,6 +931,13 @@ namespace DashboardHardwareChecker.ViewModels
 
             string msg = $"*Dashboard HardWareChecker Version*: {versionNumber} \n\n*Name:* {UserName} \n*Email:* {UserEmail} \n*Organization:* {Organization}";
             msg += $"\n*Paratext Version:* {ParatextVersion} \n\n*Location*:\n{ComputerLocation}\n";
+            msg += $"\n*CPU*:\n{_cpuType} \n\n*RAM*:\n{_ramGb} GB \n\n*Chassis*:\n{ChassisType}\n";
+            msg += $"\n*Score:* ";
+            foreach (var mode in PowerModes)
+            {
+                msg += $"\n{mode.Name}: {mode.RunTime}\n";
+            }
+
             msg += $"\n---------------------------------------------";
             foreach (var projects in SelectedProjects)
             {
@@ -942,7 +964,54 @@ namespace DashboardHardwareChecker.ViewModels
 
         private void GetParatextVersion()
         {
+            var fileName = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.LocalApplicationData), @"Paratext93\RegistrationInfo.xml");
 
+            if (File.Exists(fileName))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(RegistrationData));
+                var xml = File.ReadAllText(fileName);
+                using (StringReader reader = new StringReader(xml))
+                {
+                    _registration = (RegistrationData)serializer.Deserialize(reader);
+
+                    UserName = _registration.Name;
+                    UserEmail = _registration.Email;
+                    Organization = GetOrganizationNameFromEmail();
+                }
+            }
+        }
+
+        private string GetOrganizationNameFromEmail()
+        {
+            string resultString = string.Empty;
+            try
+            {
+                resultString = Regex.Match(_registration.Email, "(?<=@)[^.]+", RegexOptions.IgnoreCase).Value;
+            }
+            catch (ArgumentException ex)
+            {
+                // Syntax error in the regular expression
+            }
+
+            if (resultString == string.Empty)
+            {
+                return string.Empty;
+            }
+
+            switch (resultString.ToLower())
+            {
+                case "tsco":
+                    return "Seed Company";
+                case "sil":
+                    return "SIL";
+                case "clear":
+                    return "Clear Bible";
+                case "wycliffe":
+                    return "Wycliffe";
+            }
+
+            return resultString;
         }
 
         private async Task GetComputerGeolocation()

@@ -496,12 +496,12 @@
                         </TextBox>
                     </StackPanel>
 
-                    <Grid Margin="0,15,0,0">
+                    <Grid Margin="0,15,0,0" ShowGridLines="False">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="88*" />
-                            <ColumnDefinition Width="270*" />
-                            <ColumnDefinition Width="357*" />
-                            <ColumnDefinition Width="357*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
 
@@ -525,32 +525,51 @@
                             </iconPacks:PackIconUnicons.Style>
                         </iconPacks:PackIconUnicons>
 
-                        <iconPacks:PackIconUnicons
-                            Grid.Column="0"
-                            Width="36"
-                            Height="36"
-                            Margin="20,0,0,0"
-                            VerticalAlignment="Center"
-                            Foreground="{StaticResource GreenMidBrush}"
-                            Kind="EnvelopeCheck">
-                            <iconPacks:PackIconUnicons.Style>
-                                <Style TargetType="iconPacks:PackIconUnicons">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SendSuccessfulVisibility}" Value="Collapsed">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </iconPacks:PackIconUnicons.Style>
-                        </iconPacks:PackIconUnicons>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Foreground="{StaticResource GreenDarkBrush}">
+                                Message Sent!
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SendSuccessfulVisibility}" Value="Collapsed">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <iconPacks:PackIconUnicons
+                                Width="36"
+                                Height="36"
+                                Margin="10,0,25,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource GreenMidBrush}"
+                                Kind="EnvelopeCheck">
+                                <iconPacks:PackIconUnicons.Style>
+                                    <Style TargetType="iconPacks:PackIconUnicons">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SendSuccessfulVisibility}" Value="Collapsed">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </iconPacks:PackIconUnicons.Style>
+                            </iconPacks:PackIconUnicons>
+                        </StackPanel>
 
 
                         <Button
                             x:Name="SendMessage"
                             Grid.Column="3"
                             Width="Auto"
-                            Margin="0,0,10,10"
+                            Margin="0,0,10,0"
                             HorizontalAlignment="Right"
                             Content="4. Send Specifications to Clear Bible"
                             IsEnabled="{Binding OkButtonIsEnabled}">
