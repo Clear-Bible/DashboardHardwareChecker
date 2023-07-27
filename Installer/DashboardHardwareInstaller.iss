@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ClearDashboardHardwareChecker"
-#define MyAppVersion "1.0.1.0"
+#define MyAppVersion "1.2.0.0"
 #define MyAppPublisher "Clear Bible, Inc."
 #define MyAppURL "https://www.clear.bible/"
 #define MyAppExeName "DashboardHardwareChecker.exe"
