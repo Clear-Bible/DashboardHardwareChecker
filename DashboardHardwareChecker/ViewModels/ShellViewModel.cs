@@ -530,6 +530,7 @@ namespace DashboardHardwareChecker.ViewModels
 
         #region Methods
 
+
         public void ValidateOkButton()
         {
             if (UserName == "" || UserEmail == "" || Organization == "" || IsTestComplete == false)
@@ -929,8 +930,9 @@ namespace DashboardHardwareChecker.ViewModels
             var thisVersion = Assembly.GetEntryAssembly().GetName().Version;
             var versionNumber = $"{thisVersion.Major}.{thisVersion.Minor}.{thisVersion.Build}.{thisVersion.Revision}";
 
-            string msg = $"*Dashboard HardWareChecker Version*: {versionNumber} \n\n*Name:* {UserName} \n*Email:* {UserEmail} \n*Organization:* {Organization}";
-            msg += $"\n*Paratext Version:* {ParatextVersion} \n\n*Location*:\n{ComputerLocation}\n";
+            string msg = $"*Dashboard HardWareChecker Version*: {versionNumber} \n\n*Name:* {UserName} \n*Email:* {UserEmail} \n*Organization:* {Organization}\n";
+            msg += $"\n*Paratext Version:* {ParatextVersion} \n*Paratext UserName*: {_registration.Name}";
+            msg += $"\n*Paratext Supporter Name:* {_registration.SupporterName} \n*Paratext Code*: {_registration.Code} \n\n*Location*:\n{ComputerLocation}\n";
             msg += $"\n*CPU*:\n{_cpuType} \n\n*RAM*:\n{_ramGb} GB \n\n*Chassis*:\n{ChassisType}\n";
             msg += $"\n*Score:* ";
             foreach (var mode in PowerModes)
