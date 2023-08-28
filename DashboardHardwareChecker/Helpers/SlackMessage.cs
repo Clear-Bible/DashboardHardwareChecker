@@ -10,8 +10,16 @@ namespace DashboardHardwareChecker.Helpers
     {
         private readonly string _messageText;
         private readonly string _filePath;
-        private const string Channel = "C048084B26A";  //'dashboard-external-logs' channel
-        private const string Token = "xoxb-543912748098-4276663789221-yA8iEo2FYECELxpePNnSOkRP";
+
+        // CLEAR BIBLE SLACK
+        //private const string Channel = "C048084B26A";  //'dashboard-external-logs' channel
+        //private const string Token = "xoxb-543912748098-4276663789221-yA8iEo2FYECELxpePNnSOkRP";
+
+
+        // BIBLICA SLACK
+        private const string Channel = "C05PY42HEBW";  //C05PV2VM2JU  'dashboard-external-logs' channel
+        private const string Token = "xoxb-4696406923-5804914278598-WoMrOnYk4E3zV2VoSrJvEEbn";
+
 
         public SlackMessage(string messageText, string filePath)
         {
