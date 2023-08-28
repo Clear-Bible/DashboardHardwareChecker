@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 Installer/Output/DashboardHardwareChecker_Setup.exe
+code_signing_key/password.txt
