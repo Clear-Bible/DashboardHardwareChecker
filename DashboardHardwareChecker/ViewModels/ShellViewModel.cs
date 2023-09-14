@@ -407,6 +407,17 @@ namespace DashboardHardwareChecker.ViewModels
             }
         }
 
+        private string _dashboardUser = "";
+        public string DashboardUser
+        {
+            get => _dashboardUser;
+            set
+            {
+                _dashboardUser = value;
+                NotifyOfPropertyChange(() => DashboardUser);
+            }
+        }
+        
 
 
         #endregion //Observable Properties
@@ -428,6 +439,11 @@ namespace DashboardHardwareChecker.ViewModels
             //get the assembly version
             var thisVersion = Assembly.GetEntryAssembly().GetName().Version;
             Version = $"Clear Dashboard System Checker  -  Version: {thisVersion.Major}.{thisVersion.Minor}.{thisVersion.Build}.{thisVersion.Revision}";
+
+
+            // get the dashboard user if exists
+            GetDashboardUser();
+
 
 
             // figure out the Paratext version
@@ -1075,6 +1091,68 @@ namespace DashboardHardwareChecker.ViewModels
 
 
         }
+
+
+        private void GetDashboardUser()
+        {
+            // check for license file
+
+            var licenseFile = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData), @"Microsoft\UserSecrets\license\license.txt");
+
+            if (File.Exists(licenseFile))
+            {
+                var user = LicenseManager.DecryptLicenseFromFileToUser(licenseFile);
+
+                DashboardUser = user.FullName;
+                return;
+            }
+
+            licenseFile = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.MyDocuments), @"ClearDashboard_Projects\license.txt");
+            if (File.Exists(licenseFile))
+            {
+                var user = LicenseManager.DecryptLicenseFromFileToUser(licenseFile);
+                DashboardUser = user.FullName;
+                return;
+            }
+
+            DashboardUser = string.Empty;
+        }
+
+        public void DeleteDashboardUser()
+        {
+            var licenseFile = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData), @"Microsoft\UserSecrets\license\license.txt");
+
+            if (File.Exists(licenseFile))
+            {
+                try
+                {
+                    File.Delete(licenseFile);
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            licenseFile = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.MyDocuments), @"ClearDashboard_Projects\license.txt");
+
+            if (File.Exists(licenseFile))
+            {
+                try
+                {
+                    File.Delete(licenseFile);
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            GetDashboardUser();
+        }
+
 
         #endregion // Methods
 
