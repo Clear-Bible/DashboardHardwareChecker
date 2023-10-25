@@ -608,7 +608,7 @@
                             Width="Auto"
                             Margin="0,0,10,0"
                             HorizontalAlignment="Right"
-                            Content="4. Send Specifications to Clear Bible"
+                            Content="4. Send Specifications to ClearDashboard Team"
                             IsEnabled="{Binding OkButtonIsEnabled}">
                             <Button.Style>
                                 <Style BasedOn="{StaticResource GreenMidButton}" TargetType="Button">
